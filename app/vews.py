@@ -37,28 +37,23 @@ def get_user_by_id(uid):
                                   status=200)
     if request.method == 'PUT':
         data = request.json
-        try:
-            user = db.session.query(User).get(uid)
+        user = db.session.query(User).filter(User.id == uid).one()
+        # user = db.session.query(User).get(uid)
             # user = db.session.query(User).filter(User.id == uid).get(uid)
-            user.id = data.get("id")
-            user.first_name = data.get("first_name")
-            user.last_name = data.get("last_name")
-            user.age = data.get("age")
-            user.email = data.get("email")
-            user.role = data.get("role")
-            user.phone = data.get("phone")
-            db.session.commit()
-        except Exception as e:
-            print(e)
+        user.id = data.get("id")
+        user.first_name = data.get("first_name")
+        user.last_name = data.get("last_name")
+        user.age = data.get("age")
+        user.email = data.get("email")
+        user.role = data.get("role")
+        user.phone = data.get("phone")
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
-    elif request.method == 'DELETE':
-        try:
-            db.session.query(User).filter(User.id == uid).delete()
-            db.session.commit()
-        except Exception as e:
-            print(e)
+    if request.method == 'DELETE':
+        db.session.query(User).filter(User.id == uid).delete()
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
@@ -96,30 +91,23 @@ def get_orders_by_id(oid):
                                   status=200)
     if request.method == 'PUT':
         data = request.json
-        try:
-            order = db.session.filter(Order.id == oid).get(oid)
-            order.id = data.get("id")
-            order.name = data.get("name")
-            order.description = data.get("description")
-            order.start_date = data.get("start_date")
-            order.end_date = data.get("end_date")
-            order.address = data.get("address")
-            order.price = data.get("price")
-            order.customer_id = data.get("customer_id")
-            order.executor_id = data.get("executor_id")
-            db.session.commit()
-        except Exception as e:
-            print(e)
+        order = db.session.query(Order).get(oid)
+        order.id = data.get("id")
+        order.name = data.get("name")
+        order.description = data.get("description")
+        order.start_date = data.get("start_date")
+        order.end_date = data.get("end_date")
+        order.address = data.get("address")
+        order.price = data.get("price")
+        order.customer_id = data.get("customer_id")
+        order.executor_id = data.get("executor_id")
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
     if request.method == 'DELETE':
-        try:
-            db.session.query(Order).filter(Order.id == oid).delete()
-            db.session.commit()
-        except Exception as e:
-            print(e)
-
+        db.session.query(Order).filter(Order.id == oid).delete()
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
@@ -146,7 +134,7 @@ def get_offers():
                                   status=200)
 
 
-@app.route("/offers/<int:oid>", methods=['GET', 'PUT'])
+@app.route("/offers/<int:oid>", methods=['GET', 'PUT', 'DELETE'])
 def get_offers_by_id(oid):
     if request.method == 'GET':
         result = []
@@ -156,23 +144,18 @@ def get_offers_by_id(oid):
                                   mimetype='application/json', status=200)
     if request.method == 'PUT':
         data = request.json
-        try:
-            offer = db.session.filter(Offer.id == oid).get(oid)
-            offer.id = data.get("id")
-            offer.order_id = data.get("order_id")
-            offer.executor_id = data.get("executor_id")
-            db.session.commit()
-        except Exception as e:
-            print(e)
+        offer = db.session.query(Offer).get(oid)
+        # offer = db.session.filter(Offer.id == oid).get(oid)
+        offer.id = data.get("id")
+        offer.order_id = data.get("order_id")
+        offer.executor_id = data.get("executor_id")
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
     if request.method == 'DELETE':
-        try:
-            db.session.query(Offer).filter(Offer.id == oid).delete()
-            db.session.commit()
-        except Exception as e:
-            print(e)
+        db.session.query(Offer).filter(Offer.id == oid).delete()
+        db.session.commit()
         return app.response_class(json.dumps("ok"),
                                   mimetype='application/json',
                                   status=200)
